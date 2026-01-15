@@ -1,5 +1,6 @@
 import sys
 from dataclasses import dataclass
+from venv import logger
 
 import numpy as np
 import pandas as pd
@@ -20,13 +21,13 @@ import os
 
 @dataclass
 class DataTransformationConfig:
-    preprocessor_obj_file_path:str=os.path.join("artifacts","preprocessor.pkl")
+    preprocessor_obj_file_path:str=os.path.join("artifacts", "preprocessor.pkl")
 
 class DataTransformation:
     def __init__(self):
         self.data_transformation_config=DataTransformationConfig()
 
-    # Responsible for creating the data transformation pipelines    
+    # Method for creating the data transformation pipelines    
     def get_data_transformer_object(self):
         logger= setup_logger("DataTransformation")
         logger.info("Creating data transformation pipelines.")
@@ -35,7 +36,7 @@ class DataTransformation:
 
             numerical_columns = ['Creatinine', 'BUN', 'GFR', 'Urine_Output', 'Age', 'Protein_in_Urine', 'Water_Intake']
             categorical_columns = ['Diabetes', 'Hypertension', 'Medication']
-            
+
             num_pipeline = Pipeline(
                 steps=[
                     ('scaler', StandardScaler())
@@ -66,7 +67,8 @@ class DataTransformation:
 
         except Exception as e:
             raise CustomException(e, sys)
-        
+    
+    # Method to initiate data transformation
     def initiate_data_transformation(self, train_path, test_path):
         logger= setup_logger("DataTransformation")
         logger.info("Entered the data transformation method or component.")
@@ -77,27 +79,28 @@ class DataTransformation:
             test_df = pd.read_csv(test_path)
             logger.info("Read train and test data completed.")
 
-
             logger.info("Obtaining preprocessor object.")
             preprocessor_obj = self.get_data_transformer_object()
 
             target_column_name = "CKD_Status"
-
             input_feature_train_df = train_df.drop(columns=[target_column_name], axis=1)
             target_feature_train_df = train_df[target_column_name]
 
             input_feature_test_df = test_df.drop(columns=[target_column_name], axis=1)
             target_feature_test_df = test_df[target_column_name]
 
-
             logger.info("Applying preprocessing object on training and testing dataframes.")
             input_feature_train_arr = preprocessor_obj.fit_transform(input_feature_train_df)
             input_feature_test_arr = preprocessor_obj.transform(input_feature_test_df)
 
+            # Combining the input features and target feature into a single array   
             train_arr = np.c_[input_feature_train_arr, np.array(target_feature_train_df)]
             test_arr = np.c_[input_feature_test_arr, np.array(target_feature_test_df)]
+            logger.info(f"Shape of training set array: {train_arr.shape}")
+            logger.info(f"Shape of test set array: {test_arr.shape}")
 
             logger.info("Saving preprocessor object.")
+            # Use the path from the config to save the preprocessor object
             save_object(file_path=self.data_transformation_config.preprocessor_obj_file_path,
                         obj=preprocessor_obj)
 
