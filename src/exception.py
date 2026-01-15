@@ -1,5 +1,5 @@
 import sys
-import logging 
+from logger import setup_logger
 
 
 # Function to extract detailed error message
@@ -17,3 +17,13 @@ class CustomException(Exception):
     def __str__(self):
         return self.error_message
     
+
+# Example usage
+# if __name__ == "__main__":
+#     logger = setup_logger("exception_test")
+
+#     try:
+#         a = 1 / 0
+#     except Exception as e:
+#         custom_exc = CustomException(e, sys)
+#         logger.error(custom_exc)
