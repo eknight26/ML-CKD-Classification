@@ -206,3 +206,21 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# VS Code settings
+.vscode/
+
+# macOS system files
+.DS_Store
+
+# Python caches and compiled files
+__pycache__/
+*.pyc
+
+# Local log files (from your logger.py)
+logs/
+
+# Data and artifacts (usually too big for GitHub)
+artifacts/
+notebook/data/*.csv
+
