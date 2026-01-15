@@ -21,11 +21,10 @@ def get_requirements(file_path: str) -> list[str]:
 
 
 setup(
-    name="proj",
+    name="Chronic Kidney Disease Prediction ML Project",
     version="0.0.1",
     author="Ernest",
     author_email="ernestcabs@gmail.com",
     packages=find_packages(),
     install_requires=get_requirements("requirements.txt")
 )
-
